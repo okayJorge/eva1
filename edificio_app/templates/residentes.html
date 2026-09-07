@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Vecinos</h4>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo"><i class="fa-solid fa-plus"></i> Nuevo vecino</button>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>Nombre</th><th>Medidor</th><th>Teléfono</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    {% for r in residentes %}
+      <tr>
+        <td>{{ r.nombre }}</td>
+        <td>{{ r.medidor or '-' }}</td>
+        <td>{{ r.telefono or '-' }}</td>
+        <td>
+          {% if r.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Inactivo</span>{% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('toggle_residente', rid=r.id) }}" class="btn btn-sm btn-outline-secondary">{{ 'Desactivar' if r.activo else 'Activar' }}</a>
+          <a href="{{ url_for('eliminar_residente', rid=r.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar vecino y sus registros?')"><i class="fa-solid fa-trash"></i></a>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">No hay vecinos registrados.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="modal fade" id="modalNuevo" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="post" class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Nuevo vecino</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Nombre</label><input type="text" name="nombre" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">N° de medidor</label><input type="text" name="medidor" class="form-control"></div>
+        <div class="mb-2"><label class="form-label">Teléfono</label><input type="text" name="telefono" class="form-control"></div>
+      </div>
+      <div class="modal-footer"><button type="submit" class="btn btn-primary">Guardar</button></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

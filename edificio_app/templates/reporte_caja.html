@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4 class="mb-3">Reporte de caja {% if desde or hasta %}({{ desde or '...' }} a {{ hasta or '...' }}){% endif %}</h4>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-4"><div class="card p-3"><div class="small text-muted">Total ingresos</div><div class="fs-4 fw-bold text-success">Bs {{ '%.2f'|format(total_ing) }}</div></div></div>
+  <div class="col-md-4"><div class="card p-3"><div class="small text-muted">Total egresos</div><div class="fs-4 fw-bold text-danger">Bs {{ '%.2f'|format(total_egr) }}</div></div></div>
+  <div class="col-md-4"><div class="card p-3"><div class="small text-muted">Saldo</div><div class="fs-4 fw-bold">Bs {{ '%.2f'|format(saldo) }}</div></div></div>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+  <table class="table table-sm">
+    <thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Vecino</th><th class="text-end">Monto</th></tr></thead>
+    <tbody>
+    {% for m in movimientos %}
+      <tr>
+        <td>{{ m.fecha.strftime('%d/%m/%Y') }}</td>
+        <td><span class="badge bg-{{ 'success' if m.tipo=='INGRESO' else 'danger' }}">{{ m.tipo }}</span></td>
+        <td>{{ m.detalle }}</td>
+        <td>{{ m.residente.nombre if m.residente else '-' }}</td>
+        <td class="text-end">Bs {{ '%.2f'|format(m.monto) }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="text-center text-muted">Sin movimientos en el rango indicado.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
